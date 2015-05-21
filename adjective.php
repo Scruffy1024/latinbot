@@ -55,26 +55,6 @@
 				$Pdat = array('o', 'ae', 'o', 'is', 'is', 'is');
 				$Pabl = array('o', 'a', 'o', 'is', 'is', 'is');
 				$Pvoc = array($Pstem . 'e', $pp2, $pp3, $Pstem . 'i', $Pstem . 'ae', $Pstem . 'a');
-				
-				$Cstem = substr($pp3, 0, -2) . 'i';
-				$Cnom = array('or', 'or', 'us', 'ores', 'ores', 'ora');
-				$Cacc = array('orem', 'orem', 'us', 'ores', 'ores', 'ora');
-				$Cgen = array('oris', 'oris', 'oris', 'orum', 'orum', 'orum');
-				$Cdat = array('ori', 'ori', 'ori', 'oribus', 'oribus', 'oribus');
-				$Cabl = array('ore', 'ore', 'ore', 'oribus', 'oribus', 'oribus');
-				$Cvoc = array('or', 'or', 'us', 'ores', 'ores', 'ora');
-				
-				if(endsWith($pp1, 'er')) {
-					$Sstem = $pp1 . 'rim';
-				} else {
-					$Sstem = substr($pp3, 0, -2) . 'issim';
-				}
-				$Snom = array('us', 'a', 'um', 'i', 'ae', 'a');
-				$Sacc = array('um', 'am', 'um', 'os', 'as', 'a');
-				$Sgen = array('i', 'ae', 'i', 'orum', 'arum', 'orum');
-				$Sdat = array('o', 'ae', 'o', 'is', 'is', 'is');
-				$Sabl = array('o', 'a', 'o', 'is', 'is', 'is');
-				$Svoc = array('e', 'a', 'um', 'i', 'ae', 'a');
 			} else {
 				if(strlen($pp3) == 0) {
 					if(endsWith($pp2, 'e')) {
@@ -106,17 +86,40 @@
 				$Pdat = array('i', 'i', 'i', 'ibus', 'ibus', 'ibus');
 				$Pabl = array('i', 'i', 'i', 'ibus', 'ibus', 'ibus');
 			}
+			
+			$Cstem = $Pstem . 'i';
+			$Cnom = array('or', 'or', 'us', 'ores', 'ores', 'ora');
+			$Cacc = array('orem', 'orem', 'us', 'ores', 'ores', 'ora');
+			$Cgen = array('oris', 'oris', 'oris', 'orum', 'orum', 'orum');
+			$Cdat = array('ori', 'ori', 'ori', 'oribus', 'oribus', 'oribus');
+			$Cabl = array('ore', 'ore', 'ore', 'oribus', 'oribus', 'oribus');
+			$Cvoc = array('or', 'or', 'us', 'ores', 'ores', 'ora');
+			
+			if(endsWith($pp1, 'er')) {
+				$Sstem = $pp1 . 'rim';
+			} else if(endsWith($Pstem, 'l')) {
+				$Sstem = $Pstem . 'lim';
+			} else {
+				$Sstem = substr($pp2, 0, -2) . 'issim';
+			}
+			
+			$Snom = array('us', 'a', 'um', 'i', 'ae', 'a');
+			$Sacc = array('um', 'am', 'um', 'os', 'as', 'a');
+			$Sgen = array('i', 'ae', 'i', 'orum', 'arum', 'orum');
+			$Sdat = array('o', 'ae', 'o', 'is', 'is', 'is');
+			$Sabl = array('o', 'a', 'o', 'is', 'is', 'is');
+			$Svoc = array('e', 'a', 'um', 'i', 'ae', 'a');
 		?>
 		<span>Declension: <?php echo $decl; ?></span>
 		<hr>
 		<table>
 			<tbody>
 				<tr class="indicative">
-					<th rowspan="2" colspan="2"></th>
+					<th rowspan="2" colspan="2">adjective</th>
 					<th colspan="3">singular</th>
 					<th colspan="3">plural</th>
 				</tr>
-				<tr class="indicative">
+				<tr class="indicative" style="text-align: center;">
 					<td>M</td>
 					<td>F</td>
 					<td>N</td>
