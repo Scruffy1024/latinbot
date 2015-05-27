@@ -109,6 +109,18 @@
 			$Sdat = array('o', 'ae', 'o', 'is', 'is', 'is');
 			$Sabl = array('o', 'a', 'o', 'is', 'is', 'is');
 			$Svoc = array('e', 'a', 'um', 'i', 'ae', 'a');
+			
+			// Yeh, neh, this isn't finished.
+			// It gets comparatives wrong
+			// Positive of facilis, -is, -e is not faciliter, rather facile. Irregular? Doubt it. Check.
+			if($decl == '1/2') {
+				$Padv = $Pstem . 'e';
+			} else {
+				$Padv = $Pstem . 'iter';
+			}
+			$Cadv = $Cstem . 'ore';
+			$Sadv = $Sstem . 'e';
+			
 		?>
 		<span>Declension: <?php echo $decl; ?></span>
 		<hr>
@@ -219,6 +231,26 @@
 				<tr>
 					<td class="indicative">vocative</td>
 					<?php foreach($Svoc as $ending) {echo "<td>" . $Sstem . $ending . "</td>";} ?>
+				</tr>
+			</tbody>
+		</table>
+		
+		<table>
+			<tbody>
+				<tr>
+					<th colspan="2" class="indicative">adverb</th>
+				</tr>
+				<tr>
+					<th class="indicative">positive</th>
+					<td><?php echo $Padv; ?></td>
+				</tr>
+				<tr>
+					<th class="indicative">comparative</th>
+					<td><?php echo $Cadv; ?></td>
+				</tr>
+				<tr>
+					<th class="indicative">superlative</th>
+					<td><?php echo $Sadv; ?></td>
 				</tr>
 			</tbody>
 		</table>
