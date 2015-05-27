@@ -102,23 +102,23 @@
 				
 				$nom2 = $stem . ($pp3 == "n" ? "ua" : "us");
 				$acc2 = ($pp3 == "n" ? $nom2 : $stem . "us");
-				$gen2 = $stem . "um";
+				$gen2 = $stem . "uum";
 				$dat2 = $stem . ($ex1 ? "ubus" : "ibus");
 				$abl2 = $dat2;
 				$voc2 = $nom2;
 			}
 			
 			if($decl == 1 && endsWith($pp2, "arum")) {
-				$pluralOnly = 1;
+				$pluralOnly = true;
 			} else if($decl == 2 && endsWith($pp2, "orum")) {
-				$pluralOnly = 1;
+				$pluralOnly = true;
 			} else if($decl == 3 && endsWith($pp2, "um")) {
-				$pluralOnly = 1;
-			} else if($decl == 4 && endsWith($pp2, "um")) {
-				$pluralOnly = 1;
+				$pluralOnly = true;
+			} else if($decl == 4 && endsWith($pp2, "uum")) {
+				$pluralOnly = true;
 			}
 			
-			if($pluralOnly == 1) {
+			if($pluralOnly) {
 				$nom1 = "-";
 				$acc1 = "-";
 				$gen1 = "-";
