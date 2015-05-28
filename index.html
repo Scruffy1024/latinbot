@@ -50,7 +50,7 @@
 			cfg.server.enabled = true;
 			cfg.server.verb = {};
 			cfg.server.verb.noParticipleMode = 0;
-			cfg.server.verb.participlePrinciplePartMode = 0;
+			cfg.server.verb.participlePrinciplePartMode = 1;
 			cfg.server.verb.beta = 0;
 			
 			function verbPPchange(ppid) {
@@ -159,7 +159,6 @@
 				document.getElementById("inflectionLabel").innerText = rButton.value.startsWith('a') ? "Inflect an:" : "Inflect a:";
 				
 				document.getElementById("verbInput").style.display = "none";
-				//document.getElementById("adverbInput").style.display = "none";
 				document.getElementById("nounInput").style.display = "none";
 				document.getElementById("adjectiveInput").style.display = "none";
 				document.getElementById("pronounInput").style.display = "none";
@@ -167,10 +166,8 @@
 				document.getElementById(rButton.value + "Input").style.display = "block";
 			}
 			
-			function updateFrame(wordKind) {
-				frame = document.getElementById("frame");
-				
-				src = "./" + wordKind + ".php?";
+			function getLink(wordKind) {
+				src = "http://www.wumbo.co.nz/latinbot/" + wordKind + ".php?";
 				
 				if(wordKind == "verb") {
 					pp1verb = document.getElementById("pp1verb");
@@ -182,8 +179,6 @@
 					if(cfg.server.enabled) {
 						src += "&cfg=" + JSON.stringify(cfg.server.verb);
 					}
-				} else if(wordKind == "adverb") {
-				
 				} else if(wordKind == "noun") {
 					pp1noun = document.getElementById("pp1noun");
 					pp2noun = document.getElementById("pp2noun");
@@ -208,16 +203,22 @@
 					// error!
 				}
 				
+				return src;
+			}
+			
+			function updateFrame(wordKind) {
+				src = getLink(wordKind);
 				
-				//frame.src = src;
 				xhr = new XMLHttpRequest();
 				xhr.open("GET", src, true);
 				xhr.onloadend = function() {
 					document.getElementById("respFrame").innerHTML = xhr.responseText;
 				}
 				xhr.send();
-				
-				document.getElementById("respFrame").style.display = "block";
+			}
+			
+			function shPermaLink(wordKind) {
+				prompt("Copy the text below:", getLink(wordKind));
 			}
 		//-->
 		</script>
@@ -268,32 +269,8 @@
 					</tr>
 				</tbody>
 			</table>
-			<button onclick="updateFrame('verb')">Update</button>
+			<button onclick="updateFrame('verb')">Update</button><button onclick="shPermaLink('verb')">Get Permalink</button>
 		</div>
-		<!--
-		<div id="adverbInput" class="input">
-			<table>
-				<tbody>
-					<tr id="avpp1">
-						<td>
-							<input type="text" id="pp1adv" class="l2inp" placeholder="Pricipal Part I">
-						</td>
-					</tr>
-					<tr id="avpp2">
-						<td>
-							<input type="text" id="pp2adv" class="l2inp" placeholder="Pricipal Part II">
-						</td>
-					</tr>
-					<tr id="avpp3">
-						<td>
-							<input type="text" id="pp3adv" class="l2inp" placeholder="Pricipal Part III">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<button onclick="updateFrame('adverb')">Update</button>
-		</div>
-		-->
 		<div id="nounInput" class="input">
 			<table>
 				<tbody>
@@ -314,7 +291,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<button onclick="updateFrame('noun')">Update</button>
+			<button onclick="updateFrame('noun')">Update</button><button onclick="shPermaLink('noun')">Get Permalink</button>
 		</div>
 		<div id="adjectiveInput" class="input">
 			<table>
@@ -336,7 +313,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<button onclick="updateFrame('adjective')">Update</button>
+			<button onclick="updateFrame('adjective')">Update</button><button onclick="shPermaLink('adjective')">Get Permalink</button>
 		</div>
 		<div id="pronounInput" class="input">
 			<select id="pronoun">
@@ -365,7 +342,7 @@
 					<option value="rel">qui, quae, quod</option>
 				</optgroup>
 			</select>
-			<button onclick="updateFrame('pronoun')">Update</button>
+			<button onclick="updateFrame('pronoun')">Update</button><button onclick="shPermaLink('pronoun')">Get Permalink</button>
 		</div>
 		<br>
 		<!-- <iframe>s are for chumps. Get real. Use <div>s.-->

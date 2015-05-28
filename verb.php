@@ -78,6 +78,14 @@
 			$pp3 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp3']));
 			$pp4 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp4']));
 			
+			if(strlen($pp4) == 0) {
+				if(endsWith($pp1, "r")) {
+					die("That's a typo or a deponent verb. Neither is supported.");
+				} elseif(endsWith($pp2, "ri")) {
+					die("That's a typo or a semi-deponent verb. Neither is supported.");
+				}
+			}
+			
 			if(endsWith($pp2, "are")) {
 				$conj = 1;
 			} else if(endsWith($pp2, "ere")) {
@@ -93,13 +101,10 @@
 			}
 			
 			$supineStem = substr($pp4, 0, -2);
-			
 			$perfStem = substr($pp3, 0, -1);
-			
 			$presStem = substr($pp2, 0, -3);
 			
-			$presVowel = $conj > 2 ? 'i' : 'a';
-			$presVowel = $conj == 2 ? 'e' : $presVowel;
+			$presVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a'); // It works. Don't touch it.
 			
 			switch($conj) {
 			case 1: $presPartVowel = 'a'; break;
@@ -111,7 +116,7 @@
 			
 			$imperfStem = $conj > 3 ? substr($pp2, 0, -3) . "ie" : substr($pp2, 0, -2);
 			
-			$futStem = $conj == 1 ? substr($pp2, 0, -2) : substr($pp1, 0, -1);
+			$futStem = $conj <= 2 ? substr($pp2, 0, -2) : substr($pp2, 0, -3) . ($conj == 3 ? "" : "i");
 			
 			$futPerfEndings = array("ero", "eris", "erit", "erimus", "eritis", "erint");
 			$pstPerfEndings = array("i", "isti", "it", "imus", "istis", "erunt");
@@ -289,7 +294,13 @@
 				<tr></tr>
 				<tr>
 					<th class="participles">present</th>
-					<td><?php echo $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis"; ?></td>
+					<td><?php
+						if($cfg->{'participlePrinciplePartMode'} == 0) {
+							echo $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
+						} else {
+							echo $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
+						}
+					?></td>
 					<?php echo $participleNotFoundTD; ?>
 				</tr>
 				<tr>
@@ -300,7 +311,7 @@
 							echo $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
 						} else {
 							echo $supineStem . "us, -a, -um";
-					}
+						}
 					?></td>
 				</tr>
 				<tr>
@@ -310,7 +321,7 @@
 							echo $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
 						} else {
 							echo $supineStem . "urus, -a, -um";
-					}
+						}
 					?></td>
 					<?php echo $participleNotFoundTD; ?>
 				</tr>
