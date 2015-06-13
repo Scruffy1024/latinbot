@@ -27,14 +27,22 @@
 				case "demo2": $type = "Demonstrative Pronoun: hic, haec, hoc"; break;
 				case "demo3": $type = "Demonstrative Pronoun: ille, illa, illud"; break;
 				case "demo4": $type = "Demonstrative Pronoun: iste, ista, istud"; break;
-				case "pers1": $type = "Personal Pronoun: ego, mei"; break;
-				case "pers2": $type = "Personal Pronoun: tu, tui"; break;
-				case "pers3": $type = "Personal Pronoun: -, sui"; break;
 				case "ident": $type = "Identifying Pronoun: idem, eadem, idem"; break;
 				case "intens": $type = "Intensive Pronoun: ipse, ipsa, ipsum"; break;
 				case "interrog": $type = "Interrogative Pronoun: quis, quis, quid"; break;
+				case "num1": $type = "Declinable Number: unus, una, unum"; break;
+				case "num2": $type = "Declinable Number: duo, duae, duo"; break;
+				case "num3": $type = "Declinable Number: tres, tres, tria"; break;
+				case "pers1": $type = "Personal Pronoun: ego, mei"; break;
+				case "pers2": $type = "Personal Pronoun: tu, tui"; break;
+				case "pers3": $type = "Personal Pronoun: -, sui"; break;
 				case "rel": $type = "Relative Pronoun: qui, quae, quod"; break;
-				default: "Realative Pronoun: qui, quae, quod";
+				case "null": $type = "None Selected"; break;
+				default: "None Selected";
+			}
+			
+			if($pp1 == "" || $pp1 == "null") {
+				die("Select a pronoun from the dropdown menu.");
 			}
 		?>
 		<span><?php echo $type; ?></span>

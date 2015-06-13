@@ -317,7 +317,7 @@
 		</div>
 		<div id="pronounInput" class="input">
 			<select id="pronoun">
-				<option selected disabled hidden value=""></option>
+				<option selected disabled hidden value="null"></option>
 				<optgroup label="Demonstratives">
 					<option value="demo1">is, ea, id</option>
 					<option value="demo2">hic, haec, hoc</option>
@@ -340,6 +340,11 @@
 				</optgroup>
 				<optgroup label="Relative">
 					<option value="rel">qui, quae, quod</option>
+				</optgroup>
+				<optgroup label="Numbers">
+					<option value="num1">unus, una, unum</option>
+					<option value="num2">duo, duae, duo</option>
+					<option value="num3">tres, tres, tria</option>
 				</optgroup>
 			</select>
 			<button onclick="updateFrame('pronoun')">Update</button><button onclick="shPermaLink('pronoun')">Get Permalink</button>
