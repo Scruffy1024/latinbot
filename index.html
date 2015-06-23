@@ -177,7 +177,7 @@
 					
 					src += "pp1=" + pp1verb.value + "&" + "pp2=" + pp2verb.value + "&" + "pp3=" + pp3verb.value + "&" + "pp4=" + pp4verb.value;
 					if(cfg.server.enabled) {
-						src += "&cfg=" + JSON.stringify(cfg.server.verb);
+						src += "&cfg=" + escape(JSON.stringify(cfg.server.verb));
 					}
 				} else if(wordKind == "noun") {
 					pp1noun = document.getElementById("pp1noun");
