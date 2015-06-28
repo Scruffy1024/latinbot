@@ -27,7 +27,7 @@
 			}
 			
 			.subjunctive {
-				background-color: rgb(180, 255, 180);
+				background-color: rgb(192, 228, 192);
 			}
 			
 			.participles {
@@ -61,7 +61,6 @@
 			
 			if($cfg->{'noParticipleMode'} == 0) {
 				$participleNotFoundTD .= ">X";
-				
 			} elseif($cfg->{'noParticipleMode'} == 1) {
 				$participleNotFoundTD .= " class=\"skullxbones\">";
 			} else {
@@ -69,9 +68,9 @@
 			}
 			$participleNotFoundTD .= "</td>";
 			
-			$essePresent = array("sum", "es", "est", "sumus", "estis", "sunt");
-			$esseImperfect = array("eram", "eras", "erat", "eramus", "eratis", "erant");
-			$esseFuture = array("ero", "eris", "erit", "erimus", "eritis", "erunt");
+			$essePre = array("sum", "es", "est", "sumus", "estis", "sunt");
+			$esseImp = array("eram", "eras", "erat", "eramus", "eratis", "erant");
+			$esseFut = array("ero", "eris", "erit", "erimus", "eritis", "erunt");
 			
 			$pp1 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp1']));
 			$pp2 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp2']));
@@ -104,7 +103,7 @@
 			$perfStem = substr($pp3, 0, -1);
 			$presStem = substr($pp2, 0, -3);
 			
-			$presVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a'); // It works. Don't touch it.
+			$presVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a');
 			
 			switch($conj) {
 			case 1: $presPartVowel = 'a'; break;
@@ -114,23 +113,23 @@
 			case 4: $presPartVowel = 'ie'; break;
 			}
 			
-			$imperfStem = $conj > 3 ? substr($pp2, 0, -3) . "ie" : substr($pp2, 0, -2);
+			$imperfStem = ($conj > 3 ? substr($pp2, 0, -3) . "ie" : substr($pp2, 0, -2)) . "ba";
 			
 			$futStem = $conj <= 2 ? substr($pp2, 0, -2) : substr($pp2, 0, -3) . ($conj == 3 ? "" : "i");
 			
-			$futPerfEndings = array("ero", "eris", "erit", "erimus", "eritis", "erint");
-			$pstPerfEndings = array("i", "isti", "it", "imus", "istis", "erunt");
-			$pluPerfEntings = array("eram", "eras", "erat", "eramus", "eratis", "erant");
+			$fupEnds = array("ero", "eris", "erit", "erimus", "eritis", "erint");
+			$perEnds = array("i", "isti", "it", "imus", "istis", "erunt");
+			$pluEnds = array("eram", "eras", "erat", "eramus", "eratis", "erant");
 			
-			$IAfutSimpEndings = $conj < 3 ? array("bo", "bis", "bit", "bimus", "bitis", "bunt") : array("am", "es", "et", "emus", "etis", "ent");
-			$IApresentEndings = array("s", "t", "mus", "tis", $conj <= 2 ? "nt" : "unt");
-			$IApImperfEndings = array("bam", "bas", "bat", "bamus", "batis", "bant");
+			$IApreEnds = array("s", "t", "mus", "tis", $conj <= 2 ? "nt" : "unt");
+			$IAfutEnds = $conj < 3 ? array("bo", "bis", "bit", "bimus", "bitis", "bunt") : array("am", "es", "et", "emus", "etis", "ent");
+			$IAimpEnds = array("m", "s", "t", "mus", "tis", "nt");
 			
 			
 			$presStemVowel = $presStem . $presVowel;
-			$IPpresentEndings = array("ris", "tur", "mur", "mini", "ntur");
-			$IPimperfectEndings = array("r", "ris", "tur", "mur", "mini", "ntur");
-			$IPfutureEndings = $conj <= 2 ? array("bor", "beris", "bitur", "bimur", "bimini", "buntur") : array("ar", "eris", "etur", "emur", "emini", "entur");
+			$IPpreEnds = array("ris", "tur", "mur", "mini", "ntur");
+			$IPimpEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
+			$IPfutEnds = $conj <= 2 ? array("bor", "beris", "bitur", "bimur", "bimini", "buntur") : array("ar", "eris", "etur", "emur", "emini", "entur");
 			
 			$infinIApres = $pp2;
 			$infinIPpres = ($conj == 3 || $conj == 3.1) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
@@ -143,6 +142,38 @@
 				$infinIAfut = $supineStem . "urus, -a, -um esse";
 			}
 			$infinIPfut = $pp4 . ' iri';
+			
+			// Finalisation
+			// I
+			//  A
+			$IApre = array($pp1); foreach($IApreEnds as $end) {array_push($IApre, $presStem . (($end == "unt" && $conj == 3) ? "" : $presVowel) . $end);}
+			$IAimp = array(); foreach($IAimpEnds as $end) {array_push($IAimp, $imperfStem . $end);}
+			$IAfut = array(); foreach($IAfutEnds as $end) {array_push($IAfut, $futStem . $end);}
+			$IAper = array(); foreach($perEnds as $end) {array_push($IAper, $perfStem . $end);}
+			$IAplu = array(); foreach($pluEnds as $end) {array_push($IAplu, $perfStem . $end);}
+			$IAfup = array(); foreach($fupEnds as $end) {array_push($IAfup, $perfStem . $end);}
+			//  P
+			$IPpre = array($pp1 . "r"); foreach($IPpreEnds as $end) {array_push($IPpre, $presStemVowel . $end);}
+			$IPimp = array(); foreach($IPimpEnds as $end) {array_push($IPimp, $imperfStem . $end);}
+			$IPfut = array(); foreach($IPfutEnds as $end) {array_push($IPfut, $futStem . $end);}
+			$IPper = array(); for($i = 0; $i < 6; $i++) {array_push($IPper, $supineStem . ($i < 3 ? "us " : "i ") . $essePre[$i]);}
+			$IPplu = array(); for($i = 0; $i < 6; $i++) {array_push($IPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseImp[$i]);}
+			$IPfup = array(); for($i = 0; $i < 6; $i++) {array_push($IPfup, $supineStem . ($i < 3 ? "us " : "i ") . $esseFut[$i]);}
+			// S
+			//  A
+			$SApre = array();
+			$SAimp = array();
+			$SAfut = array();
+			$SAper = array();
+			$SAplu = array();
+			$SAfup = array();
+			//  P
+			$SPpre = array();
+			$SPimp = array();
+			$SPfut = array();
+			$SPper = array();
+			$SPplu = array();
+			$SPfup = array();
 		?>
 		<span>Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj;?></span>
 		<hr>
@@ -164,56 +195,53 @@
 				<tr>
 					<th rowspan="6" class="indicative">active</th>
 					<td class="indicative">present</td>
-					<?php echo "<td>$pp1</td>"; foreach($IApresentEndings as $ending) {echo "<td>" . $presStem . (($ending == "unt" && $conj == 3) ? "" : $presVowel) . $ending . "</td>";} ?>
+					<?php foreach($IApre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">imperfect</td>
-					<?php foreach($IApImperfEndings as $ending) {echo "<td>" . $imperfStem . $ending . "</td>";} ?>
+					<?php foreach($IAimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">future</td>
-					<?php foreach($IAfutSimpEndings as $ending) {echo "<td>" . $futStem . $ending . "</td>";} ?>
+					<?php foreach($IAfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">perfect</td>
-					<?php foreach($pstPerfEndings as $ending) {echo "<td>" . $perfStem . $ending . "</td>";} ?>
+					<?php foreach($IAper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">pluperfect</td>
-					<?php foreach($pluPerfEntings as $ending) {echo "<td>" . $perfStem . $ending . "</td>";} ?>
+					<?php foreach($IAplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">future perfect</td>
-					<?php foreach($futPerfEndings as $ending) {echo "<td>" . $perfStem . $ending . "</td>";} ?>
+					<?php foreach($IAfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				<!--
-				// INDICATIVE ACTIVE
-				// INDICATIVE PASSIVE
-				-->
+				
 				<tr>
 					<th rowspan="6" class="indicative">passive</th>
 					<td class="indicative">present</td>
-					<?php echo "<td>". $pp1 . "r</td>"; foreach($IPpresentEndings as $ending) {echo "<td>" . $presStemVowel . $ending . "</td>";}?>
+					<?php foreach($IPpre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">imperfect</td>
-					<?php foreach($IPimperfectEndings as $ending) {echo "<td>" . $imperfStem . "ba" . $ending . "</td>";}?>
+					<?php foreach($IPimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">future</td>
-					<?php foreach($IPfutureEndings as $ending) {echo "<td>" . $futStem . $ending . "</td>";} ?>
+					<?php foreach($IPfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">past perfect</td>
-					<?php for($i = 0; $i < 6; $i++) {echo "<td>" . $supineStem . ($i < 3 ? "us " : "i ") . $essePresent[$i] . "</td>";} ?>
+					<?php foreach($IPper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">pluperfect</td>
-					<?php for($i = 0; $i < 6; $i++) {echo "<td>" . $supineStem . ($i < 3 ? "us " : "i ") . $esseImperfect[$i] . "</td>";} ?>
+					<?php foreach($IPplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="indicative">future perfect</td>
-					<?php for($i = 0; $i < 6; $i++) {echo "<td>" . $supineStem . ($i < 3 ? "us " : "i ") . $esseFuture[$i] . "</td>";} ?>
+					<?php foreach($IPfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 			</tbody>
 		</table>
@@ -240,46 +268,53 @@
 				<tr>
 					<th rowspan="6" class="subjunctive">active</th>
 					<td class="subjunctive">present</td>
+					<?php foreach($SApre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">imperfect</td>
+					<?php foreach($SAimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">future</td>
+					<?php foreach($SAfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">perfect</td>
+					<?php foreach($SAper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">pluperfect</td>
+					<?php foreach($SAplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">future perfect</td>
+					<?php foreach($SAfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				-->
-				<!--
-				// SUBJUNCTIVE ACTIVE
-				// SUBJUNCTIVE PASSIVE
-				-->
-				<!--
+				
 				<tr>
 					<th rowspan="6" class="subjunctive">passive</th>
 					<td class="subjunctive">present</td>
+					<?php foreach($SPpre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">imperfect</td>
+					<?php foreach($SPimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">future</td>
+					<?php foreach($SPfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">past perfect</td>
+					<?php foreach($SPper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">pluperfect</td>
+					<?php foreach($SPplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">future perfect</td>
+					<?php foreach($SPfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 			</tbody>
 		</table>
