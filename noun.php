@@ -73,7 +73,7 @@
 				$gen1 = $pp2;
 				$dat1 = $stem . "o";
 				$abl1 = $stem . "o";
-				$voc1 = ($pp3 == "m" && endsWith($pp1, "us") && !endsWith($pp1, "ius") ? $stem . "e" : endsWith($pp1, "ius") ? $stem . "i" : $pp1);
+				$voc1 = ($pp3 == "m" ? (endsWith($pp1, "us") ? (endsWith($pp1, "ius") ? $stem . "i" : $stem . "e") : $pp1) : $pp1);
 				
 				$nom2 = $stem . ($pp3 == "n" ? "a" : "i");
 				$acc2 = $stem . ($pp3 == "n" ? "a" : "os");

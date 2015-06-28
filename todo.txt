@@ -1,0 +1,22 @@
+Developer Private
+
+index.html
+- Checkboxes for which tables we want
+	- Verb
+	- Adjective
+- Automatically update the frame if the user switches to a word type in which they already have principal parts filled out.
+- Add option for the currently hidden predictive feature: cookie & localStorage
+- Spruce up title font
+- Display permalink in textbox on page as opposed to input field.
+- Contact details or similar
+- Github link
+- Mobile support
+- Pronoun
+	- Do better than a drop-down menu for selection.
+
+adjective.php
+- Split degrees into different tables with different colours
+
+*.php
+- Irregulars by text file
+- Text only mode
