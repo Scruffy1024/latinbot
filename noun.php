@@ -86,8 +86,8 @@
 				$ex2 = $pp3 == "n" && (endsWith($pp1, "e") || endsWith($pp1, "al") || endsWith($pp1, "ar"));
 				$ex3 = countSyllables($pp1) == countSyllables($pp2);
 				$ex4 = $pp1 == "frater" || $pp2 == "soror" || $pp1 == "mater" || $pp1 == "pater" || $pp1 == "canis" || $pp1 == "senex" || $pp1 == "juvenis";
-				
-				$gen2i = $ex1 || ($ex3 && !$ex4);
+				echo preg_split("[aeiouy]+?\w*?[^e]", mb_strtolower($pp2));
+				$gen2i = ($ex1 || ($ex3 && !$ex4));
 				
 				$stem = ($pluralOnly ? ($gen2i ? substr($pp2, 0, -3) : substr($pp2, 0, -2)) : substr($pp2, 0, -2));
 				
@@ -100,7 +100,7 @@
 				
 				$nom2 = $stem . ($pp3 == "n" ? ($ex3 ? "ia" : "a") : "es"); // if neuter then (if ex3 then ia else a end) else es end
 				$acc2 = $stem . ($pp3 == "n" ? ($ex3 ? "ia" : "a") : "es");
-				$gen2 = ($pluralOnly ? $pp2 : $stem . ($ex1 || ($ex3 && !$ex4) ? "ium" : "um"));
+				$gen2 = ($pluralOnly ? $pp2 : $stem . ($gen2i ? "ium" : "um"));
 				$dat2 = $stem . "ibus";
 				$abl2 = $dat2;
 				$voc2 = $nom2;

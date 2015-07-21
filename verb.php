@@ -68,9 +68,12 @@
 			}
 			$participleNotFoundTD .= "</td>";
 			
-			$essePre = array("sum", "es", "est", "sumus", "estis", "sunt");
-			$esseImp = array("eram", "eras", "erat", "eramus", "eratis", "erant");
-			$esseFut = array("ero", "eris", "erit", "erimus", "eritis", "erunt");
+			$esseIAPre = array("sum", "es", "est", "sumus", "estis", "sunt");
+			$esseIAImp = array("eram", "eras", "erat", "eramus", "eratis", "erant");
+			$esseIAFut = array("ero", "eris", "erit", "erimus", "eritis", "erunt");
+			
+			$esseSAPre = array("sim", "sis", "sit", "simus", "sitis", "sint");
+			$esseSAImp = array("essem", "esses", "esset", "essemus", "essetis", "essent");
 			
 			$pp1 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp1']));
 			$pp2 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp2']));
@@ -103,7 +106,18 @@
 			$perfStem = substr($pp3, 0, -1);
 			$presStem = substr($pp2, 0, -3);
 			
-			$presVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a');
+			$IpresVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a');
+			switch($conj) {
+				case 1: $SpresVowel = 'e'; break;
+				case 2: $SpresVowel = 'ea'; break;
+				case 3: $SpresVowel = 'a'; break;
+				default: $SpresVowel = 'ia'; break;
+			}
+			
+			$IpresStemVowel = $presStem . $IpresVowel;
+			$SpresStemVowel = $presStem . $SpresVowel;
+			
+			$SAimpVowel = substr($pp2, -3, 1);
 			
 			switch($conj) {
 			case 1: $presPartVowel = 'a'; break;
@@ -125,11 +139,19 @@
 			$IAfutEnds = $conj < 3 ? array("bo", "bis", "bit", "bimus", "bitis", "bunt") : array("am", "es", "et", "emus", "etis", "ent");
 			$IAimpEnds = array("m", "s", "t", "mus", "tis", "nt");
 			
-			
-			$presStemVowel = $presStem . $presVowel;
 			$IPpreEnds = array("ris", "tur", "mur", "mini", "ntur");
 			$IPimpEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
 			$IPfutEnds = $conj <= 2 ? array("bor", "beris", "bitur", "bimur", "bimini", "buntur") : array("ar", "eris", "etur", "emur", "emini", "entur");
+			
+			
+			
+			$SApreEnds = array("m", "s", "t", "mus", "tis", "nt");
+			$SAimpEnds = array("em", "es", "et", "emus", "etis", "ent");
+			$SAperEnds = array("erim", "eris", "erit", "erimus", "eritis", "erint");
+			$SApluEnds = array("issem", "isses", "isset", "issemus", "issetis", "issent");
+			
+			$SPpreEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
+			$SPimpEnds = array("er", "eris", "etur", "emur", "emini", "entur");
 			
 			$infinIApres = $pp2;
 			$infinIPpres = ($conj == 3 || $conj == 3.1) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
@@ -146,34 +168,30 @@
 			// Finalisation
 			// I
 			//  A
-			$IApre = array($pp1); foreach($IApreEnds as $end) {array_push($IApre, $presStem . (($end == "unt" && $conj == 3) ? "" : $presVowel) . $end);}
+			$IApre = array($pp1); foreach($IApreEnds as $end) {array_push($IApre, $presStem . (($end == "unt" && $conj == 3) ? "" : $IpresVowel) . $end);}
 			$IAimp = array(); foreach($IAimpEnds as $end) {array_push($IAimp, $imperfStem . $end);}
 			$IAfut = array(); foreach($IAfutEnds as $end) {array_push($IAfut, $futStem . $end);}
 			$IAper = array(); foreach($perEnds as $end) {array_push($IAper, $perfStem . $end);}
 			$IAplu = array(); foreach($pluEnds as $end) {array_push($IAplu, $perfStem . $end);}
 			$IAfup = array(); foreach($fupEnds as $end) {array_push($IAfup, $perfStem . $end);}
 			//  P
-			$IPpre = array($pp1 . "r"); foreach($IPpreEnds as $end) {array_push($IPpre, $presStemVowel . $end);}
+			$IPpre = array($pp1 . "r"); foreach($IPpreEnds as $end) {array_push($IPpre, $IpresStemVowel . $end);}
 			$IPimp = array(); foreach($IPimpEnds as $end) {array_push($IPimp, $imperfStem . $end);}
 			$IPfut = array(); foreach($IPfutEnds as $end) {array_push($IPfut, $futStem . $end);}
-			$IPper = array(); for($i = 0; $i < 6; $i++) {array_push($IPper, $supineStem . ($i < 3 ? "us " : "i ") . $essePre[$i]);}
-			$IPplu = array(); for($i = 0; $i < 6; $i++) {array_push($IPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseImp[$i]);}
-			$IPfup = array(); for($i = 0; $i < 6; $i++) {array_push($IPfup, $supineStem . ($i < 3 ? "us " : "i ") . $esseFut[$i]);}
+			$IPper = array(); for($i = 0; $i < 6; $i++) {array_push($IPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseIAPre[$i]);}
+			$IPplu = array(); for($i = 0; $i < 6; $i++) {array_push($IPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseIAImp[$i]);}
+			$IPfup = array(); for($i = 0; $i < 6; $i++) {array_push($IPfup, $supineStem . ($i < 3 ? "us " : "i ") . $esseIAFut[$i]);}
 			// S
 			//  A
-			$SApre = array();
-			$SAimp = array();
-			$SAfut = array();
-			$SAper = array();
-			$SAplu = array();
-			$SAfup = array();
+			$SApre = array(); foreach($SApreEnds as $end) {array_push($SApre, $SpresStemVowel . $end);}
+			$SAimp = array(); foreach($SAimpEnds as $end) {array_push($SAimp, $presStem . $SAimpVowel . "r" . $end);}
+			$SAper = array(); foreach($SAperEnds as $end) {array_push($SAper, $perfStem . $end);}
+			$SAplu = array(); foreach($SApluEnds as $end) {array_push($SAplu, $perfStem . $end);}
 			//  P
-			$SPpre = array();
-			$SPimp = array();
-			$SPfut = array();
-			$SPper = array();
-			$SPplu = array();
-			$SPfup = array();
+			$SPpre = array(); foreach($SPpreEnds as $end) {array_push($SPpre, $SpresStemVowel . $end);}
+			$SPimp = array(); foreach($SPimpEnds as $end) {array_push($SPimp, $presStem . $SAimpVowel . "r" . $end);}
+			$SPper = array(); for($i = 0; $i < 6; $i++) {array_push($SPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAPre[$i]);}
+			$SPplu = array(); for($i = 0; $i < 6; $i++) {array_push($SPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAImp[$i]);}
 		?>
 		<span>Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj;?></span>
 		<hr>
@@ -243,15 +261,6 @@
 					<td class="indicative">future perfect</td>
 					<?php foreach($IPfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-			</tbody>
-		</table>
-		<!--
-		// INDICATIVE
-		// SUBJUNCTIVE
-		-->
-		<!--
-		<table>
-			<tbody>
 				<tr class="subjunctive">
 					<th rowspan="2" colspan="2">subjunctive</th>
 					<th colspan="3">singular</th>
@@ -266,17 +275,13 @@
 					<td>third</td>
 				</tr>
 				<tr>
-					<th rowspan="6" class="subjunctive">active</th>
+					<th rowspan="4" class="subjunctive">active</th>
 					<td class="subjunctive">present</td>
 					<?php foreach($SApre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">imperfect</td>
 					<?php foreach($SAimp as $form) {echo "<td>" . $form . "</td>";}?>
-				</tr>
-				<tr>
-					<td class="subjunctive">future</td>
-					<?php foreach($SAfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">perfect</td>
@@ -286,23 +291,15 @@
 					<td class="subjunctive">pluperfect</td>
 					<?php foreach($SAplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				<tr>
-					<td class="subjunctive">future perfect</td>
-					<?php foreach($SAfup as $form) {echo "<td>" . $form . "</td>";}?>
-				</tr>
 				
 				<tr>
-					<th rowspan="6" class="subjunctive">passive</th>
+					<th rowspan="4" class="subjunctive">passive</th>
 					<td class="subjunctive">present</td>
 					<?php foreach($SPpre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">imperfect</td>
 					<?php foreach($SPimp as $form) {echo "<td>" . $form . "</td>";}?>
-				</tr>
-				<tr>
-					<td class="subjunctive">future</td>
-					<?php foreach($SPfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
 					<td class="subjunctive">past perfect</td>
@@ -312,13 +309,9 @@
 					<td class="subjunctive">pluperfect</td>
 					<?php foreach($SPplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				<tr>
-					<td class="subjunctive">future perfect</td>
-					<?php foreach($SPfup as $form) {echo "<td>" . $form . "</td>";}?>
-				</tr>
 			</tbody>
 		</table>
-		-->
+		
 		<table>
 			<tbody>
 				<tr class="participles">
