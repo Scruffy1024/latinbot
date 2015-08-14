@@ -46,10 +46,6 @@
 				background-image: url('/assets/SkullXBones.svg');
 				background-size: contain;
 			}
-			
-			.beta {
-				background: repeating-linear-gradient(-45deg, #FF0000, #FFFFFF 10px, #465298 15px, #FF0000 10px);
-			}
 		</style>
 	</head>
 	<body>
@@ -358,13 +354,14 @@
 		<table>
 			<tbody>
 				<tr>
-					<th rowspan="2" colspan="2" class="imperative">imperative</th>
+					<th class="imperative" rowspan="2" colspan="3">imperative</th>
 					<th class="imperative">singular</th>
 					<th class="imperative">plural</th>
 				</tr>
 				<tr></tr>
 				<tr>
-					<th rowspan="2" class="imperative">active</th>
+					<th class="imperative" rowspan="4">present</th>
+					<th class="imperative" rowspan="2">active</th>
 					<th class="imperative">positive</th>
 					<td><?php echo $presStem . ($conj == 1 ? 'a' : ($conj == 4 ? 'i' : 'e')); ?></td>
 					<td><?php echo $presStem . ($conj == 1 ? 'a' : ($conj == 2 ? 'e' : 'i')) . 'te'; ?></td>
@@ -374,22 +371,17 @@
 					<td><?php echo "noli " . $infinIApres; ?></td>
 					<td><?php echo "nolite " . $infinIApres; ?></td>
 				</tr>
-				<?php
-				if(isset($cfg)) {
-					if(isset($cfg->{'beta'})) {
-						if($cfg->{'beta'} == 1) { ?>
-				<tr class="beta">
-					<th rowspan="2">passive</th>
-					<th>positive</th>
-					<td>?</td>
-					<td>?</td>
+				<tr>
+					<th class="imperative" rowspan="2">passive</th>
+					<th class="imperative">positive</th>
+					<td><?php echo $infinIApres; ?></td>
+					<td><?php echo $IpresStemVowel . "mini"; ?></td>
 				</tr>
-				<tr class="beta">
-					<th>negative</th>
-					<td><?php echo "noli " . $infinIPpres; ?>?</td>
-					<td><?php echo "nolite " . $infinIPpres; ?>?</td>
+				<tr>
+					<th class="imperative">negative</th>
+					<td><?php echo "noli " . $infinIPpres; ?></td>
+					<td><?php echo "nolite " . $infinIPpres; ?></td>
 				</tr>
-				<?php }}} ?>
 			</tbody>
 		</table>
 		<table>
