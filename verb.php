@@ -210,22 +210,6 @@
 			$SPper = array(); for($i = 0; $i < 6; $i++) {array_push($SPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAPre[$i]);}
 			$SPplu = array(); for($i = 0; $i < 6; $i++) {array_push($SPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAImp[$i]);}
 			
-			if($deponency == 1) {
-				$IApre = $IPpre;
-				$IAimp = $IPimp;
-				$IAfut = $IPfut;
-				$IAper = $IPper;
-				$IAplu = $IPplu;
-				$IAfup = $IPfup;
-				
-				$SApre = $SPpre;
-				$SAimp = $SPimp;
-				$SAfut = $SPfut;
-				$SAper = $SPper;
-				$SAplu = $SPplu;
-				$SAfup = $SPfup;
-			}
-			
 			// Finalisation - Other Moods
 			// Im
 			//  Pre
@@ -244,7 +228,32 @@
 			$ImPrePNeg1 = "noli " . $infinIPpres;
 			$ImPrePNeg2 = "nolite " . $infinIPpres;
 			
+			// Pa
+			if($cfg->{'participlePrinciplePartMode'} == 0) {
+				$PaPre = $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
+				$PaPer = $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
+				$PaFut = $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
+			} else {
+				$PaPre = $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
+				$PaPer = $supineStem . "us, -a, -um";
+				$PaFut = $supineStem . "urus, -a, -um";
+			}
+			
 			if($deponency == 1) {
+				$IApre = $IPpre;
+				$IAimp = $IPimp;
+				$IAfut = $IPfut;
+				$IAper = $IPper;
+				$IAplu = $IPplu;
+				$IAfup = $IPfup;
+				
+				$SApre = $SPpre;
+				$SAimp = $SPimp;
+				$SAfut = $SPfut;
+				$SAper = $SPper;
+				$SAplu = $SPplu;
+				$SAfup = $SPfup;
+				
 				$ImPreAPos1 = $ImPrePPos1;
 				$ImPreAPos2 = $ImPrePPos2;
 				$ImPreANeg1 = $ImPrePNeg1;
@@ -423,36 +432,18 @@
 				<tr></tr>
 				<tr>
 					<th class="participles">present</th>
-					<td><?php
-						if($cfg->{'participlePrinciplePartMode'} == 0) {
-							echo $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
-						} else {
-							echo $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
-						}
-					?></td>
+					<td><?php echo $PaPre; ?></td>
 					<?php echo $participleNotFoundTD; ?>
 				</tr>
 				<tr>
 					<th class="participles">perfect</th>
 					<?php if($deponency == 0) {echo $participleNotFoundTD;} ?>
-					<td><?php 
-						if($cfg->{'participlePrinciplePartMode'} == 0) {
-							echo $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
-						} else {
-							echo $supineStem . "us, -a, -um";
-						}
-					?></td>
+					<td><?php echo $PaPer; ?></td>
 					<?php if($deponency != 0) {echo $participleNotFoundTD;} ?>
 				</tr>
 				<tr>
 					<th class="participles">future</th>
-					<td><?php 
-						if($cfg->{'participlePrinciplePartMode'} == 0) {
-							echo $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
-						} else {
-							echo $supineStem . "urus, -a, -um";
-						}
-					?></td>
+					<td><?php echo $PaFut; ?></td>
 					<?php echo $participleNotFoundTD; ?>
 				</tr>
 				
