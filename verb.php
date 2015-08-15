@@ -485,10 +485,10 @@
 				<tr>
 					<th class="infinitive">future</th>
 					<?php
-						if($deponency == 0.5) {
-							echo $tdo . $infinIAfut . $tdc . $participleNotFoundTD;
-						} else {
+						if($deponency == 0) {
 							echo $tdo . $infinIAfut . $tdc . $tdo . $infinIPfut . $tdc;
+						} else {
+							echo $tdo . $infinIAfut . $tdc . $participleNotFoundTD;
 						}
 					?>
 				</tr>
