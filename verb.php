@@ -504,15 +504,5 @@ Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj; ?>
 ________________________________________________________________________________
 <?php
 	}
-/*
-Added deponent verb support
-Corrected deponency detection
-Removed duplicate ending specification
-Corrected stem finding in subjunctive for imperfect and pluperfect
-Disabled passive voice for deponent verbs
-Migrated imperative formation from inline to finalisation block
-Repositioned participle table from before to after imperative table
-Joined participle and infinitive tables
-*/
 ?>
 
