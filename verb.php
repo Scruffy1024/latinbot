@@ -73,32 +73,53 @@
 			
 			$pp1 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp1']));
 			$pp2 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp2']));
-			$pp3 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp3']));
+			$pp3 = preg_replace("/[^A-Za-z ]/", '',strtolower($_GET['pp3']));
 			$pp4 = preg_replace("/[^A-Za-z]/", '',strtolower($_GET['pp4']));
 			
-			if(strlen($pp4) == 0) {
+			$deponency = 0;
+			if(endsWith($pp3, " sum")) {
 				if(endsWith($pp1, "r")) {
-					die("That's a typo or a deponent verb. Neither is supported.");
-				} elseif(endsWith($pp2, "ri")) {
+					$deponency = 1;
+					//die("That's a typo or a deponent verb. Neither is supported.");
+				} else {
+					$deponency = 0.5;
 					die("That's a typo or a semi-deponent verb. Neither is supported.");
 				}
 			}
 			
-			if(endsWith($pp2, "are")) {
-				$conj = 1;
-			} else if(endsWith($pp2, "ere")) {
-				if(endsWith($pp1, "eo")) {
+			if($deponency == 0) {
+				if(endsWith($pp2, "are")) {
+					$conj = 1;
+				} else if(endsWith($pp2, "ere")) {
+					if(endsWith($pp1, "eo")) {
+						$conj = 2;
+					} else if(endsWith($pp1, "io")) {
+						$conj = 3.1;
+					} else {
+						$conj = 3;
+					}
+				} else if(endsWith($pp2, "ire")) {
+					$conj = 4;
+				}
+			} else {
+				// This is susceptible to verbaror, verbari (3rd conj, marked as 1st)
+				if(endsWith($pp2, "ari")) {
+					$conj = 1;
+				} else if(endsWith($pp2, "eri")) {
 					$conj = 2;
-				} else if(endsWith($pp1, "io")) {
-					$conj = 3.1;
+				} else if(endsWith($pp2, "iri")) {
+					$conj = 4;
 				} else {
 					$conj = 3;
 				}
-			} else if(endsWith($pp2, "ire")) {
-				$conj = 4;
 			}
 			
-			$supineStem = substr($pp4, 0, -2);
+			if($deponency == 0) {
+				$supineStem = substr($pp4, 0, -2);
+			} else {
+				$supineStem = substr($pp3, 0, -6);
+			}
+			
 			$perfStem = substr($pp3, 0, -1);
 			$presStem = substr($pp2, 0, -3);
 			
@@ -124,8 +145,9 @@
 			}
 			
 			$imperfStem = ($conj > 3 ? substr($pp2, 0, -3) . "ie" : substr($pp2, 0, -2)) . "ba";
-			
 			$futStem = $conj <= 2 ? substr($pp2, 0, -2) : substr($pp2, 0, -3) . ($conj == 3 ? "" : "i");
+			
+			$passiveEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
 			
 			$fupEnds = array("ero", "eris", "erit", "erimus", "eritis", "erint");
 			$perEnds = array("i", "isti", "it", "imus", "istis", "erunt");
@@ -136,18 +158,17 @@
 			$IAimpEnds = array("m", "s", "t", "mus", "tis", "nt");
 			
 			$IPpreEnds = array("ris", "tur", "mur", "mini", "ntur");
-			$IPimpEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
+			$IPimpEnds = $passiveEnds;
 			$IPfutEnds = $conj <= 2 ? array("bor", "beris", "bitur", "bimur", "bimini", "buntur") : array("ar", "eris", "etur", "emur", "emini", "entur");
 			
-			
-			
-			$SApreEnds = array("m", "s", "t", "mus", "tis", "nt");
-			$SAimpEnds = array("em", "es", "et", "emus", "etis", "ent");
+			$subjuntiveEnds = array("m", "s", "t", "mus", "tis", "nt");
+			$SApreEnds = $subjuntiveEnds;
+			$SAimpEnds = $subjuntiveEnds;
 			$SAperEnds = array("erim", "eris", "erit", "erimus", "eritis", "erint");
-			$SApluEnds = array("issem", "isses", "isset", "issemus", "issetis", "issent");
+			$SApluEnds = $subjuntiveEnds;
 			
-			$SPpreEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
-			$SPimpEnds = array("er", "eris", "etur", "emur", "emini", "entur");
+			$SPpreEnds = $passiveEnds;
+			$SPimpEnds = $passiveEnds;
 			
 			$infinIApres = $pp2;
 			$infinIPpres = ($conj == 3 || $conj == 3.1) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
@@ -159,9 +180,9 @@
 				$infinIPperf = $supineStem . "us, -a, -um esse";
 				$infinIAfut = $supineStem . "urus, -a, -um esse";
 			}
-			$infinIPfut = $pp4 . ' iri';
+			$infinIPfut = $supineStem . 'um iri';
 			
-			// Finalisation
+			// Finalisation - Indicative & Subjunctive
 			// I
 			//  A
 			$IApre = array($pp1); foreach($IApreEnds as $end) {array_push($IApre, $presStem . (($end == "unt" && $conj == 3) ? "" : $IpresVowel) . $end);}
@@ -171,7 +192,7 @@
 			$IAplu = array(); foreach($pluEnds as $end) {array_push($IAplu, $perfStem . $end);}
 			$IAfup = array(); foreach($fupEnds as $end) {array_push($IAfup, $perfStem . $end);}
 			//  P
-			$IPpre = array($pp1 . "r"); foreach($IPpreEnds as $end) {array_push($IPpre, $IpresStemVowel . $end);}
+			$IPpre = array($pp1 . ($deponency == 1 ? "" : "r")); foreach($IPpreEnds as $end) {array_push($IPpre, $IpresStemVowel . $end);}
 			$IPimp = array(); foreach($IPimpEnds as $end) {array_push($IPimp, $imperfStem . $end);}
 			$IPfut = array(); foreach($IPfutEnds as $end) {array_push($IPfut, $futStem . $end);}
 			$IPper = array(); for($i = 0; $i < 6; $i++) {array_push($IPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseIAPre[$i]);}
@@ -180,16 +201,61 @@
 			// S
 			//  A
 			$SApre = array(); foreach($SApreEnds as $end) {array_push($SApre, $SpresStemVowel . $end);}
-			$SAimp = array(); foreach($SAimpEnds as $end) {array_push($SAimp, $presStem . $SAimpVowel . "r" . $end);}
+			$SAimp = array(); foreach($SAimpEnds as $end) {array_push($SAimp, $infinIApres . $end);}
 			$SAper = array(); foreach($SAperEnds as $end) {array_push($SAper, $perfStem . $end);}
-			$SAplu = array(); foreach($SApluEnds as $end) {array_push($SAplu, $perfStem . $end);}
+			$SAplu = array(); foreach($SApluEnds as $end) {array_push($SAplu, $infinIAperf . $end);}
 			//  P
 			$SPpre = array(); foreach($SPpreEnds as $end) {array_push($SPpre, $SpresStemVowel . $end);}
-			$SPimp = array(); foreach($SPimpEnds as $end) {array_push($SPimp, $presStem . $SAimpVowel . "r" . $end);}
+			$SPimp = array(); foreach($SPimpEnds as $end) {array_push($SPimp, $presStem . $SAimpVowel . "re" . $end);}
 			$SPper = array(); for($i = 0; $i < 6; $i++) {array_push($SPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAPre[$i]);}
 			$SPplu = array(); for($i = 0; $i < 6; $i++) {array_push($SPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAImp[$i]);}
+			
+			if($deponency == 1) {
+				$IApre = $IPpre;
+				$IAimp = $IPimp;
+				$IAfut = $IPfut;
+				$IAper = $IPper;
+				$IAplu = $IPplu;
+				$IAfup = $IPfup;
+				
+				$SApre = $SPpre;
+				$SAimp = $SPimp;
+				$SAfut = $SPfut;
+				$SAper = $SPper;
+				$SAplu = $SPplu;
+				$SAfup = $SPfup;
+			}
+			
+			// Finalisation - Other Moods
+			// Im
+			//  Pre
+			//   A
+			//    +
+			$ImPreAPos1 = $presStem . ($conj == 1 ? 'a' : ($conj == 4 ? 'i' : 'e'));
+			$ImPreAPos2 = $presStem . ($conj == 1 ? 'a' : ($conj == 2 ? 'e' : 'i')) . 'te';
+			//    -
+			$ImPreANeg1 = "noli " . $infinIApres;
+			$ImPreANeg2 = "nolite " . $infinIApres;
+			//   P
+			//    +
+			$ImPrePPos1 = substr($infinIApres, 0, -1) . 'e';
+			$ImPrePPos2 = $IpresStemVowel . "mini";
+			//    -
+			$ImPrePNeg1 = "noli " . $infinIPpres;
+			$ImPrePNeg2 = "nolite " . $infinIPpres;
+			
+			if($deponency == 1) {
+				$ImPreAPos1 = $ImPrePPos1;
+				$ImPreAPos2 = $ImPrePPos2;
+				$ImPreANeg1 = $ImPrePNeg1;
+				$ImPreANeg2 = $ImPrePNeg2;
+			}
+			
+			// For inline usage
+			$tdo = "<td>"; 
+			$tdc = "</td>";
 		?>
-		<span>Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj;?></span>
+		<span>Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj; if($deponency != 0) {echo ", " . ($deponency == 0.5 ? "semi-" : "") . "deponent";}?></span>
 		<hr>
 		<table>
 			<tbody>
@@ -231,7 +297,7 @@
 					<td class="indicative">future perfect</td>
 					<?php foreach($IAfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				
+				<?php if($deponency == 0) { ?>
 				<tr>
 					<th rowspan="6" class="indicative">passive</th>
 					<td class="indicative">present</td>
@@ -257,6 +323,7 @@
 					<td class="indicative">future perfect</td>
 					<?php foreach($IPfup as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
+				<?php } ?>
 				<tr class="subjunctive">
 					<th rowspan="2" colspan="2">subjunctive</th>
 					<th colspan="3">singular</th>
@@ -287,7 +354,7 @@
 					<td class="subjunctive">pluperfect</td>
 					<?php foreach($SAplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				
+				<?php if($deponency == 0) { ?>
 				<tr>
 					<th rowspan="4" class="subjunctive">passive</th>
 					<td class="subjunctive">present</td>
@@ -305,6 +372,44 @@
 					<td class="subjunctive">pluperfect</td>
 					<?php foreach($SPplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+		
+		
+		<table>
+			<tbody>
+				<tr>
+					<th class="imperative" rowspan="2" colspan="3">imperative</th>
+					<th class="imperative">singular</th>
+					<th class="imperative">plural</th>
+				</tr>
+				<tr></tr>
+				<tr>
+					<th class="imperative" rowspan="<?php echo $deponency == 0 ? 4: 2; ?>">present</th>
+					<th class="imperative" rowspan="2">active</th>
+					<th class="imperative">positive</th>
+					<td><?php echo $ImPreAPos1; ?></td>
+					<td><?php echo $ImPreAPos2; ?></td>
+				</tr>
+				<tr>
+					<th class="imperative">negative</th>
+					<td><?php echo $ImPreANeg1; ?></td>
+					<td><?php echo $ImPreANeg2; ?></td>
+				</tr>
+				<?php if($deponency == 0) { ?>
+				<tr>
+					<th class="imperative" rowspan="2">passive</th>
+					<th class="imperative">positive</th>
+					<td><?php echo $ImPrePPos1; ?></td>
+					<td><?php echo $ImPrePPos2; ?></td>
+				</tr>
+				<tr>
+					<th class="imperative">negative</th>
+					<td><?php echo $ImPrePNeg1; ?></td>
+					<td><?php echo $ImPrePNeg2; ?></td>
+				</tr>
+				<?php } ?>
 			</tbody>
 		</table>
 		
@@ -329,7 +434,7 @@
 				</tr>
 				<tr>
 					<th class="participles">perfect</th>
-					<?php echo $participleNotFoundTD; ?>
+					<?php if($deponency == 0) {echo $participleNotFoundTD;} ?>
 					<td><?php 
 						if($cfg->{'participlePrinciplePartMode'} == 0) {
 							echo $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
@@ -337,6 +442,7 @@
 							echo $supineStem . "us, -a, -um";
 						}
 					?></td>
+					<?php if($deponency != 0) {echo $participleNotFoundTD;} ?>
 				</tr>
 				<tr>
 					<th class="participles">future</th>
@@ -349,43 +455,7 @@
 					?></td>
 					<?php echo $participleNotFoundTD; ?>
 				</tr>
-			</tbody>
-		</table>
-		<table>
-			<tbody>
-				<tr>
-					<th class="imperative" rowspan="2" colspan="3">imperative</th>
-					<th class="imperative">singular</th>
-					<th class="imperative">plural</th>
-				</tr>
-				<tr></tr>
-				<tr>
-					<th class="imperative" rowspan="4">present</th>
-					<th class="imperative" rowspan="2">active</th>
-					<th class="imperative">positive</th>
-					<td><?php echo $presStem . ($conj == 1 ? 'a' : ($conj == 4 ? 'i' : 'e')); ?></td>
-					<td><?php echo $presStem . ($conj == 1 ? 'a' : ($conj == 2 ? 'e' : 'i')) . 'te'; ?></td>
-				</tr>
-				<tr>
-					<th class="imperative">negative</th>
-					<td><?php echo "noli " . $infinIApres; ?></td>
-					<td><?php echo "nolite " . $infinIApres; ?></td>
-				</tr>
-				<tr>
-					<th class="imperative" rowspan="2">passive</th>
-					<th class="imperative">positive</th>
-					<td><?php echo $infinIApres; ?></td>
-					<td><?php echo $IpresStemVowel . "mini"; ?></td>
-				</tr>
-				<tr>
-					<th class="imperative">negative</th>
-					<td><?php echo "noli " . $infinIPpres; ?></td>
-					<td><?php echo "nolite " . $infinIPpres; ?></td>
-				</tr>
-			</tbody>
-		</table>
-		<table>
-			<tbody>
+				
 				<tr>
 					<th rowspan="2" class="infinitive">infinitive</th>
 					<th rowspan="2" class="infinitive">active</th>
@@ -394,18 +464,33 @@
 				<tr></tr>
 				<tr>
 					<th class="infinitive">present</th>
-					<td><?php echo $infinIApres; ?></td>
-					<td><?php echo $infinIPpres; ?></td>
+					<?php
+						if($deponency == 0) {
+							echo $tdo . $infinIApres . $tdc . $tdo . $infinIPpres . $tdc;
+						} else {
+							echo $tdo . $infinIPpres . $tdc . $participleNotFoundTD;
+						}
+					?>
 				</tr>
 				<tr>
 					<th class="infinitive">perfect</th>
-					<td><?php echo $infinIAperf; ?></td>
-					<td><?php echo $infinIPperf; ?></td>
+					<?php
+						if($deponency == 0) {
+							echo $tdo . $infinIAperf . $tdc . $tdo . $infinIPperf . $tdc;
+						} else {
+							echo $tdo . $infinIPperf . $tdc . $participleNotFoundTD;
+						}
+					?>
 				</tr>
 				<tr>
 					<th class="infinitive">future</th>
-					<td><?php echo $infinIAfut; ?></td>
-					<td><?php echo $infinIPfut; ?></td>
+					<?php
+						if($deponency == 0.5) {
+							echo $tdo . $infinIAfut . $tdc . $participleNotFoundTD;
+						} else {
+							echo $tdo . $infinIAfut . $tdc . $tdo . $infinIPfut . $tdc;
+						}
+					?>
 				</tr>
 			</tbody>
 		</table>
@@ -419,4 +504,15 @@ Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj; ?>
 ________________________________________________________________________________
 <?php
 	}
+/*
+Added deponent verb support
+Corrected deponency detection
+Removed duplicate ending specification
+Corrected stem finding in subjunctive for imperfect and pluperfect
+Disabled passive voice for deponent verbs
+Migrated imperative formation from inline to finalisation block
+Repositioned participle table from before to after imperative table
+Joined participle and infinitive tables
+*/
 ?>
+
