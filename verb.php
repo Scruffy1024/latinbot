@@ -80,14 +80,12 @@
 			if(endsWith($pp3, " sum")) {
 				if(endsWith($pp1, "r")) {
 					$deponency = 1;
-					//die("That's a typo or a deponent verb. Neither is supported.");
 				} else {
 					$deponency = 0.5;
-					die("That's a typo or a semi-deponent verb. Neither is supported.");
 				}
 			}
 			
-			if($deponency == 0) {
+			if($deponency < 1) {
 				if(endsWith($pp2, "are")) {
 					$conj = 1;
 				} else if(endsWith($pp2, "ere")) {
@@ -258,6 +256,15 @@
 				$ImPreAPos2 = $ImPrePPos2;
 				$ImPreANeg1 = $ImPrePNeg1;
 				$ImPreANeg2 = $ImPrePNeg2;
+			}
+			
+			if($deponency == 0.5) {
+				$IAper = $IPper;
+				$IAplu = $IPplu;
+				$IAfup = $IPfup;
+				
+				$SAper = $SPper;
+				$SAplu = $SPplu;
 			}
 			
 			// For inline usage
@@ -458,8 +465,10 @@
 					<?php
 						if($deponency == 0) {
 							echo $tdo . $infinIApres . $tdc . $tdo . $infinIPpres . $tdc;
-						} else {
+						} else if($deponency == 1) {
 							echo $tdo . $infinIPpres . $tdc . $participleNotFoundTD;
+						} else {
+							echo $tdo . $infinIApres . $tdc . $participleNotFoundTD;
 						}
 					?>
 				</tr>
