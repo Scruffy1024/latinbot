@@ -51,7 +51,6 @@
 			cfg.server.verb = {};
 			cfg.server.verb.noParticipleMode = 0;
 			cfg.server.verb.participlePrinciplePartMode = 1;
-			cfg.server.verb.beta = 0;
 			
 			function verbPPchange(ppid) {
 				if(!cfg.client.verb.predictive) {
@@ -203,7 +202,7 @@
 					// error!
 				}
 				
-				return src;
+				return src.replace(/ /g, '%20');
 			}
 			
 			function updateFrame(wordKind) {

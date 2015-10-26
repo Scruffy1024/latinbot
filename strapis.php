@@ -1,10 +1,10 @@
 <?php
 	function startsWith($haystack, $needle) {
-	    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+		return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
 	}
 	
 	function endsWith($haystack, $needle) {
-	    return $needle === "" || strpos($haystack, $needle, strlen($haystack) - strlen($needle)) !== FALSE;
+		return $needle == "" || strpos($haystack, $needle, strlen($haystack) - strlen($needle)) !== FALSE;
 	}
 	
 	function countSyllables($word) {
@@ -12,6 +12,6 @@
 	}
 	
 	function isVowel($c) {
-		return ($c == "a" || $c == "e" || $c == "i" || $c == "o" || $c == "u" || $c == "y");
+		return $c == "a" || $c == "e" || $c == "i" || $c == "o" || $c == "u" || $c == "y";
 	}
 ?>

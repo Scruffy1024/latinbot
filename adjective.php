@@ -54,7 +54,8 @@
 				$Pgen = array('i', 'ae', 'i', 'orum', 'arum', 'orum');
 				$Pdat = array('o', 'ae', 'o', 'is', 'is', 'is');
 				$Pabl = array('o', 'a', 'o', 'is', 'is', 'is');
-				$Pvoc = array($Pstem . 'e', $pp2, $pp3, $Pstem . 'i', $Pstem . 'ae', $Pstem . 'a');
+				$Pvoc = $Pnom;
+				$Pvoc[0] = (endsWith($pp1, "us") ? $Pstem . 'e' : $pp1);
 			} else {
 				if(strlen($pp3) == 0) {
 					if(endsWith($pp2, 'e')) {
@@ -93,7 +94,7 @@
 			$Cgen = array('oris', 'oris', 'oris', 'orum', 'orum', 'orum');
 			$Cdat = array('ori', 'ori', 'ori', 'oribus', 'oribus', 'oribus');
 			$Cabl = array('ore', 'ore', 'ore', 'oribus', 'oribus', 'oribus');
-			$Cvoc = array('or', 'or', 'us', 'ores', 'ores', 'ora');
+			$Cvoc = $Cnom;
 			
 			if(endsWith($pp1, 'er')) {
 				$Sstem = $pp1 . 'rim';
@@ -115,10 +116,12 @@
 			// Positive of facilis, -is, -e is not faciliter, rather facile. Irregular? Doubt it. Check.
 			if($decl == '1/2') {
 				$Padv = $Pstem . 'e';
+				$Cadv = $Cstem . 'ore';
 			} else {
 				$Padv = $Pstem . 'iter';
+				$Cadv = $Pstem . 'ius';
 			}
-			$Cadv = $Cstem . 'ore';
+			
 			$Sadv = $Sstem . 'e';
 			
 		?>

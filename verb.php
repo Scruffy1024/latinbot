@@ -100,7 +100,7 @@
 					$conj = 4;
 				}
 			} else {
-				// This is susceptible to verbaror, verbari (3rd conj, marked as 1st)
+				
 				if(endsWith($pp2, "ari")) {
 					$conj = 1;
 				} else if(endsWith($pp2, "eri")) {
@@ -108,7 +108,11 @@
 				} else if(endsWith($pp2, "iri")) {
 					$conj = 4;
 				} else {
-					$conj = 3;
+					if(endsWith($pp1, "ior")) {
+						$conj = 3.1;
+					} else {
+						$conj = 3;
+					}
 				}
 			}
 			
@@ -119,7 +123,7 @@
 			}
 			
 			$perfStem = substr($pp3, 0, -1);
-			$presStem = substr($pp2, 0, -3);
+			$presStem = substr($pp2, 0, ($deponency == 1 && floor($conj) == 3 ? -1 : -3));
 			
 			$IpresVowel = $conj == 2 ? 'e' : ($conj > 2 ? 'i' : 'a');
 			switch($conj) {
@@ -143,7 +147,7 @@
 			}
 			
 			$imperfStem = ($conj > 3 ? substr($pp2, 0, -3) . "ie" : substr($pp2, 0, -2)) . "ba";
-			$futStem = $conj <= 2 ? substr($pp2, 0, -2) : substr($pp2, 0, -3) . ($conj == 3 ? "" : "i");
+			$futStem = $conj <= 2 ? substr($pp2, 0, -2) : substr($pp2, 0, ($deponency == 1 && floor($conj) == 3 ? -1 : -3)) . ($conj == 3 ? "" : "i");
 			
 			$passiveEnds = array("r", "ris", "tur", "mur", "mini", "ntur");
 			
@@ -155,7 +159,7 @@
 			$IAfutEnds = $conj < 3 ? array("bo", "bis", "bit", "bimus", "bitis", "bunt") : array("am", "es", "et", "emus", "etis", "ent");
 			$IAimpEnds = array("m", "s", "t", "mus", "tis", "nt");
 			
-			$IPpreEnds = array("ris", "tur", "mur", "mini", "ntur");
+			$IPpreEnds = array("tur", "mur", "mini", "ntur");
 			$IPimpEnds = $passiveEnds;
 			$IPfutEnds = $conj <= 2 ? array("bor", "beris", "bitur", "bimur", "bimini", "buntur") : array("ar", "eris", "etur", "emur", "emini", "entur");
 			
@@ -168,9 +172,16 @@
 			$SPpreEnds = $passiveEnds;
 			$SPimpEnds = $passiveEnds;
 			
-			$infinIApres = $pp2;
-			$infinIPpres = ($conj == 3 || $conj == 3.1) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
-			$infinIAperf = substr($pp3, 0, -1) . 'isse';
+			if($deponency < 1) {
+				if($deponency == 0) {
+					$infinIApres = $pp2;
+					$infinIPpres = (floor($conj) == 3) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
+				}
+				$infinIAperf = substr($pp3, 0, -1) . 'isse';
+			} else {
+				$infinIPpres = $pp2;
+			}
+				
 			if($cfg->{'participlePrinciplePartMode'} == 0) {
 				$infinIPperf = $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um esse";
 				$infinIAfut = $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum esse";
@@ -180,6 +191,8 @@
 			}
 			$infinIPfut = $supineStem . 'um iri';
 			
+			
+			$IPpre2s = $presStem . (floor($conj) == 3 ? 'e' : $IpresVowel) . 'ris';
 			// Finalisation - Indicative & Subjunctive
 			// I
 			//  A
@@ -190,7 +203,7 @@
 			$IAplu = array(); foreach($pluEnds as $end) {array_push($IAplu, $perfStem . $end);}
 			$IAfup = array(); foreach($fupEnds as $end) {array_push($IAfup, $perfStem . $end);}
 			//  P
-			$IPpre = array($pp1 . ($deponency == 1 ? "" : "r")); foreach($IPpreEnds as $end) {array_push($IPpre, $IpresStemVowel . $end);}
+			$IPpre = array($pp1 . ($deponency == 1 ? "" : "r"), $IPpre2s); foreach($IPpreEnds as $end) {array_push($IPpre, $presStem . ($conj == 3 && $end == "ntur" ? 'u' : $IpresVowel) . $end);}
 			$IPimp = array(); foreach($IPimpEnds as $end) {array_push($IPimp, $imperfStem . $end);}
 			$IPfut = array(); foreach($IPfutEnds as $end) {array_push($IPfut, $futStem . $end);}
 			$IPper = array(); for($i = 0; $i < 6; $i++) {array_push($IPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseIAPre[$i]);}
@@ -208,35 +221,6 @@
 			$SPper = array(); for($i = 0; $i < 6; $i++) {array_push($SPper, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAPre[$i]);}
 			$SPplu = array(); for($i = 0; $i < 6; $i++) {array_push($SPplu, $supineStem . ($i < 3 ? "us " : "i ") . $esseSAImp[$i]);}
 			
-			// Finalisation - Other Moods
-			// Im
-			//  Pre
-			//   A
-			//    +
-			$ImPreAPos1 = $presStem . ($conj == 1 ? 'a' : ($conj == 4 ? 'i' : 'e'));
-			$ImPreAPos2 = $presStem . ($conj == 1 ? 'a' : ($conj == 2 ? 'e' : 'i')) . 'te';
-			//    -
-			$ImPreANeg1 = "noli " . $infinIApres;
-			$ImPreANeg2 = "nolite " . $infinIApres;
-			//   P
-			//    +
-			$ImPrePPos1 = substr($infinIApres, 0, -1) . 'e';
-			$ImPrePPos2 = $IpresStemVowel . "mini";
-			//    -
-			$ImPrePNeg1 = "noli " . $infinIPpres;
-			$ImPrePNeg2 = "nolite " . $infinIPpres;
-			
-			// Pa
-			if($cfg->{'participlePrinciplePartMode'} == 0) {
-				$PaPre = $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
-				$PaPer = $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
-				$PaFut = $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
-			} else {
-				$PaPre = $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
-				$PaPer = $supineStem . "us, -a, -um";
-				$PaFut = $supineStem . "urus, -a, -um";
-			}
-			
 			if($deponency == 1) {
 				$IApre = $IPpre;
 				$IAimp = $IPimp;
@@ -251,11 +235,6 @@
 				$SAper = $SPper;
 				$SAplu = $SPplu;
 				$SAfup = $SPfup;
-				
-				$ImPreAPos1 = $ImPrePPos1;
-				$ImPreAPos2 = $ImPrePPos2;
-				$ImPreANeg1 = $ImPrePNeg1;
-				$ImPreANeg2 = $ImPrePNeg2;
 			}
 			
 			if($deponency == 0.5) {
@@ -267,11 +246,57 @@
 				$SAplu = $SPplu;
 			}
 			
+			// Finalisation - Other Moods
+			// Im
+			//  Pre
+			//   A
+			//    +
+			$ImPreAPos1 = $presStem . ($conj == 1 ? 'a' : ($conj == 4 ? 'i' : 'e'));
+			$ImPreAPos2 = $presStem . ($conj == 1 ? 'a' : ($conj == 2 ? 'e' : 'i')) . 'te';
+			//    -
+			$ImPreANeg1 = "noli " . $infinIApres;
+			$ImPreANeg2 = "nolite " . $infinIApres;
+			//   P
+			//    +
+			$ImPrePPos1 = substr($IPpre[1], 0, -2) . 'e';
+			$ImPrePPos2 = $IPpre[4];
+			//    -
+			$ImPrePNeg1 = "noli " . $infinIPpres;
+			$ImPrePNeg2 = "nolite " . $infinIPpres;
+			
+			if($deponency == 1) {
+				$ImPreAPos1 = $ImPrePPos1;
+				$ImPreAPos2 = $ImPrePPos2;
+				$ImPreANeg1 = $ImPrePNeg1;
+				$ImPreANeg2 = $ImPrePNeg2;
+			}
+			
+			// Pa
+			if($cfg->{'participlePrinciplePartMode'} == 0) {
+				$PaPre = $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
+				$PaPer = $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
+				$PaFut = $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
+			} else {
+				$PaPre = $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
+				$PaPer = $supineStem . "us, -a, -um";
+				$PaFut = $supineStem . "urus, -a, -um";
+			}
+			
+			
+			
 			// For inline usage
 			$tdo = "<td>"; 
 			$tdc = "</td>";
+			
+			switch($conj) {
+				case 1: $printableConj = "I"; break;
+				case 2: $printableConj = "II"; break;
+				case 3: $printableConj = "III"; break;
+				case 3.1: $printableConj = "I-io"; break;
+				case 4: $printableConj = "IV"; break;
+			}
 		?>
-		<span>Conjugation: <?php echo $conj == 3.1 ? "3-io" : $conj; if($deponency != 0) {echo ", " . ($deponency == 0.5 ? "semi-" : "") . "deponent";}?></span>
+		<span>Conjugation: <?php echo $printableConj; if($deponency != 0) {echo ", " . ($deponency == 0.5 ? "semi-" : "") . "deponent";}?></span>
 		<hr>
 		<table>
 			<tbody>
@@ -328,7 +353,7 @@
 					<?php foreach($IPfut as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
-					<td class="indicative">past perfect</td>
+					<td class="indicative">perfect</td>
 					<?php foreach($IPper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
@@ -381,7 +406,7 @@
 					<?php foreach($SPimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
-					<td class="subjunctive">past perfect</td>
+					<td class="subjunctive">perfect</td>
 					<?php foreach($SPper as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
 				<tr>
