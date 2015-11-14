@@ -292,7 +292,7 @@
 				case 1: $printableConj = "I"; break;
 				case 2: $printableConj = "II"; break;
 				case 3: $printableConj = "III"; break;
-				case 3.1: $printableConj = "I-io"; break;
+				case 3.1: $printableConj = "III-io"; break;
 				case 4: $printableConj = "IV"; break;
 			}
 		?>

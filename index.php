@@ -1,3 +1,9 @@
+<?php
+	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "" || $_SERVER['HTTPS'] == "off"){
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	}
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -166,7 +172,7 @@
 			}
 			
 			function getLink(wordKind) {
-				src = "http://www.wumbo.co.nz/latinbot/" + wordKind + ".php?";
+				src = "https://www.wumbo.co.nz/latinbot/" + wordKind + ".php?";
 				
 				if(wordKind == "verb") {
 					pp1verb = document.getElementById("pp1verb");
