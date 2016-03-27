@@ -37,9 +37,18 @@ Considered JSON variables are
 	Values:
 	* `0` Use `xus, -a, -um`.
 	* `1` Use `xus, xa, xum`.
+* gerundiveDisabled
+	Type: bool
+	* `false` Gerundive will appear as future passive participle
+	* `true` Gerundive will not appear
+* futSubjDisabled
+	Type: bool
+	* `false` normal or semi-deponent verbs will have a row for future active subjuntive
+	* `true` no verb will have a row for future active subjuntive
 
 #### Other GET parameters
 If `textonly` is set, the response will be of type `text/plain`, no HTML will be used, and styling will be achieved by drawing 'ASCII art' tables.
+For best results, use a monospace font
 
 #### Examples
 ```

@@ -173,8 +173,8 @@
 			$SPimpEnds = $passiveEnds;
 			
 			if($deponency < 1) {
+				$infinIApres = $pp2;
 				if($deponency == 0) {
-					$infinIApres = $pp2;
 					$infinIPpres = (floor($conj) == 3) ? substr($pp2, 0, -3) . 'i' : substr($pp2, 0, -1) . 'i';
 				}
 				$infinIAperf = substr($pp3, 0, -1) . 'isse';
@@ -213,6 +213,7 @@
 			//  A
 			$SApre = array(); foreach($SApreEnds as $end) {array_push($SApre, $SpresStemVowel . $end);}
 			$SAimp = array(); foreach($SAimpEnds as $end) {array_push($SAimp, $infinIApres . $end);}
+			$SAfut = array(); for($i = 0; $i < 6; $i++) {array_push($SAfut, $supineStem . ($i < 3 ? "urus " : "uri ") . $esseSAPre[$i]);}
 			$SAper = array(); foreach($SAperEnds as $end) {array_push($SAper, $perfStem . $end);}
 			$SAplu = array(); foreach($SApluEnds as $end) {array_push($SAplu, $infinIAperf . $end);}
 			//  P
@@ -271,18 +272,19 @@
 				$ImPreANeg2 = $ImPrePNeg2;
 			}
 			
-			// Pa
+			// Participle
 			if($cfg->{'participlePrinciplePartMode'} == 0) {
 				$PaPre = $presStem . $presPartVowel . "ns, " . $presStem . $presPartVowel . "ntis";
 				$PaPer = $supineStem . "us, " . $supineStem . "a, " . $supineStem . "um";
 				$PaFut = $supineStem . "urus, " . $supineStem . "ura, " . $supineStem . "urum";
+				$PaGer = $presStem . $presPartVowel . "ndus, " . $presStem . $presPartVowel . "ndua, " . $presStem . $presPartVowel . "ndum";
 			} else {
+				$usaum = "us, -a, -um";
 				$PaPre = $presStem . $presPartVowel . "ns, -" . $presPartVowel . "ntis";
-				$PaPer = $supineStem . "us, -a, -um";
-				$PaFut = $supineStem . "urus, -a, -um";
+				$PaPer = $supineStem . $usaum;
+				$PaFut = $supineStem . "ur" . $usaum;
+				$PaGer = $presStem . $presPartVowel . "nd" . $usaum;
 			}
-			
-			
 			
 			// For inline usage
 			$tdo = "<td>"; 
@@ -379,7 +381,7 @@
 					<td>third</td>
 				</tr>
 				<tr>
-					<th rowspan="4" class="subjunctive">active</th>
+					<th rowspan="<?php echo ($depononecy == 1 || $cfg->{'futSubjDisabled'} ? 4 : 5); ?>" class="subjunctive">active</th>
 					<td class="subjunctive">present</td>
 					<?php foreach($SApre as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
@@ -387,6 +389,12 @@
 					<td class="subjunctive">imperfect</td>
 					<?php foreach($SAimp as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
+				<?php if($deponency != 1) { ?>
+				<tr>
+					<td class="subjunctive">future</td>
+					<?php foreach($SAfut as $form) {echo "<td>" . $form . "</td>";}?>
+				</tr>
+				<?php } ?>
 				<tr>
 					<td class="subjunctive">perfect</td>
 					<?php foreach($SAper as $form) {echo "<td>" . $form . "</td>";}?>
@@ -395,7 +403,7 @@
 					<td class="subjunctive">pluperfect</td>
 					<?php foreach($SAplu as $form) {echo "<td>" . $form . "</td>";}?>
 				</tr>
-				<?php if($deponency == 0) { ?>
+				<?php if($deponency == 0 && !$cfg->{'futSubjDisabled'}) { ?>
 				<tr>
 					<th rowspan="4" class="subjunctive">passive</th>
 					<td class="subjunctive">present</td>
@@ -476,7 +484,7 @@
 				<tr>
 					<th class="participles">future</th>
 					<td><?php echo $PaFut; ?></td>
-					<?php echo $participleNotFoundTD; ?>
+					<?php echo ($cfg->{'gerundiveDisabled'} ? $participleNotFoundTD : $tdo . $PaGer . $tdc); ?>
 				</tr>
 				
 				<tr>
